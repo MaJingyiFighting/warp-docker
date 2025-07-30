@@ -1,0 +1,32 @@
+name: Sync with Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Runs at 00:00 on Monday, UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Target Repo
+        uses: actions/checkout@v3
+        with:
+          # The repository to update
+          repository: ${{ github.repository }}
+          # A personal access token with repo scope
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          # The repository to sync from
+          upstream_repository: cmj2002/warp-docker
+          # The branch to sync from
+          upstream_branch: main
+          # The branch to sync to
+          target_branch: main
+          # A personal access token with repo scope
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # Do not force push
+          force: false
